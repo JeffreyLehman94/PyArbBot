@@ -1,5 +1,10 @@
-import urllib.request
 import ccxt
+import time
+import datetime
+import pandas as pd
+from pandas import ExcelWriter
+from pandas import ExcelFile
+import numpy as np
 
 SYMBOL = 'DGB/ETH'
 
@@ -26,10 +31,32 @@ def getBittrex():
     return prices
 
 
-kuCoinPrices = getKucoin()
-bittrexPrices = getBittrex()
+def createDataFrame():
+    kuCoinPrices = getKucoin()
+    bittrexPrices = getBittrex()
+    diff = kuCoinPrices[0] - bittrexPrices[1]
+    print("BUYING ON KUCOIN AND SELLING ON BITTREX WILL YEILD: %s" % (diff))
+    diff1 = bittrexPrices[0] - kuCoinPrices[1]
+    print("BUYING ON KUCOIN AND SELLING ON BITTREX WILL YEILD: %s" % (diff1))
+    print(time.ctime())
+    frame = pd.DataFrame({'Time': [time.ctime()],
+                       'Buying Kucoin': [diff],
+                       'Buying Bittrex': [diff1]
+                       })
+    return frame
 
-diff = kuCoinPrices[0]-bittrexPrices[1]
-print("BUYING ON KUCOIN AND SELLING ON BITTREX WILL YEILD: %s" %(diff))
-diff = bittrexPrices[0]-kuCoinPrices[1]
-print("BUYING ON KUCOIN AND SELLING ON BITTREX WILL YEILD: %s" %(diff))
+
+df = createDataFrame()
+print(df)
+writer = ExcelWriter('Pandas-Example2.xlsx')
+df.to_excel(writer, 'Sheet1', index=False)
+writer.save()
+writer.close()
+while True:
+    time.sleep(60*5)
+    df2 = createDataFrame()
+    df = df.append(df2)
+    print(df)
+    df.to_excel(writer, 'Sheet1', index=False)
+    writer.save()
+    writer.close()

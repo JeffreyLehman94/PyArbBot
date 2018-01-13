@@ -1,0 +1,18 @@
+PASTE_YOUR_TEXT_DESCRIPTION_HERE
+
+- OS:
+- Language:
+- CCXT version:
+- Exchange:
+- Method:
+
+```
+COPYPASTE_YOUR_CODE_TO_REPRODUCE_THE_BUG_HERE
+DO_NOT_DELETE_THE_BACKTICKS_AROUND_THE_CODE
+```
+
+```
+COPYPASTE_YOUR_VERBOSE_OUTPUT_HERE
+https://github.com/kroitor/ccxt/wiki/Manual#troubleshooting
+DO_NOT_DELETE_THE_BACKTICKS_AROUND_THE_OUTPUT
+```

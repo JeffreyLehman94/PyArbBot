@@ -53,10 +53,13 @@ df.to_excel(writer, 'Sheet1', index=False)
 writer.save()
 writer.close()
 while True:
-    time.sleep(60*5)
-    df2 = createDataFrame()
-    df = df.append(df2)
-    print(df)
-    df.to_excel(writer, 'Sheet1', index=False)
-    writer.save()
-    writer.close()
+    try:
+        df2 = createDataFrame()
+        df = df.append(df2)
+        print(df)
+        df.to_excel(writer, 'Sheet1', index=False)
+        writer.save()
+        writer.close()
+        time.sleep(60*5)
+    except:
+        continue

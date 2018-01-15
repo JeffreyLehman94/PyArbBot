@@ -1,12 +1,15 @@
 import ccxt
 import time
-import datetime
 import pandas as pd
 from pandas import ExcelWriter
-from pandas import ExcelFile
-import numpy as np
 
-SYMBOL = 'DGB/ETH'
+
+
+
+
+
+
+
 
 
 def getKucoin():
@@ -27,7 +30,6 @@ def getBittrex():
     prices = [-1, -1]
     prices[0] = book1['bids'][0][0]
     prices[1] = book1['asks'][0][0]
-    print(prices)
     return prices
 
 
@@ -35,31 +37,32 @@ def createDataFrame():
     kuCoinPrices = getKucoin()
     bittrexPrices = getBittrex()
     diff = kuCoinPrices[0] - bittrexPrices[1]
-    print("BUYING ON KUCOIN AND SELLING ON BITTREX WILL YEILD: %s" % (diff))
     diff1 = bittrexPrices[0] - kuCoinPrices[1]
-    print("BUYING ON KUCOIN AND SELLING ON BITTREX WILL YEILD: %s" % (diff1))
-    print(time.ctime())
-    frame = pd.DataFrame({'Time': [time.ctime()],
-                       'Buying Kucoin': [diff],
-                       'Buying Bittrex': [diff1]
-                       })
+    frame = pd.DataFrame({'ATime': [time.ctime()],
+                          'KucoinBid': [kuCoinPrices[0]],
+                          'KucoinAsk': [kuCoinPrices[1]],
+                          'KucoinDiff': [diff],
+                          'BittrexBid': [bittrexPrices[0]],
+                          'BittrexAsk': [bittrexPrices[1]],
+                          'BittrexDiff': [diff1],
+                          })
     return frame
 
 
+SYMBOL = 'DGB/ETH'
 df = createDataFrame()
-print(df)
 writer = ExcelWriter('Pandas-Example2.xlsx')
 df.to_excel(writer, 'Sheet1', index=False)
 writer.save()
 writer.close()
 while True:
     try:
+        time.sleep(60 * 5)
         df2 = createDataFrame()
         df = df.append(df2)
-        print(df)
         df.to_excel(writer, 'Sheet1', index=False)
         writer.save()
         writer.close()
-        time.sleep(60*5)
+
     except:
         continue

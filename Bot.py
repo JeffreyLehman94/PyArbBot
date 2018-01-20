@@ -5,9 +5,8 @@ from pandas import ExcelWriter
 
 # This is the trading-pair the bot will be searching for
 # Changing this will change the overall program for a different pair
-SYMBOL = 'DGB/ETH'
-
-
+SYMBOL = 'NEO/ETH'
+SYMBOL2 = 'ETH/NEO'
 # Gets the current bid and ask prices of the trading pair on Kucoin
 # Returns an array of the highest bid (index 0) and the lowest ask (index 1)
 def getKucoin():
@@ -20,8 +19,8 @@ def getKucoin():
 
 # Gets the current bid and ask prices of the trading pair on Bittrex
 # Returns an array of the highest bid (index 0) and the lowest ask (index 1)
-def getBittrex():
-    book1 = ccxt.bittrex().fetch_order_book(SYMBOL, {'depth': 10})
+def getBinance():
+    book1 = ccxt.binance().fetch_order_book(SYMBOL)
     prices = [-1, -1]
     prices[0] = book1['bids'][0][0]
     prices[1] = book1['asks'][0][0]
@@ -32,9 +31,9 @@ def getBittrex():
 # then creates and returns a dataframe with this data
 def createDataFrame():
     kuCoinPrices = getKucoin()
-    bittrexPrices = getBittrex()
-    diff = kuCoinPrices[0] / bittrexPrices[1]
-    diff1 = bittrexPrices[0] / kuCoinPrices[1]
+    bittrexPrices = getBinance()
+    diff1 = kuCoinPrices[0] / bittrexPrices[1]
+    diff = bittrexPrices[0] / kuCoinPrices[1]
     frame = pd.DataFrame({'ATime': [time.ctime()],
                           'KucoinBid': [kuCoinPrices[0]],
                           'KucoinAsk': [kuCoinPrices[1]],
@@ -48,6 +47,7 @@ def createDataFrame():
 
 # Main method for starting the program
 # Currently creates a dataframe, appends it to the previous one and writes the dataframe to an excel spreadsheet
+# This runs every 5 minutes
 def main():
     df = createDataFrame()
     writer = ExcelWriter('Pandas-Example2.xlsx')
